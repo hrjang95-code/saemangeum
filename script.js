@@ -102,6 +102,8 @@
   document.body.style.overflow='hidden';preload();updateTarget();animate();
 })();
 
+
+
 // --- GSAP Map Interaction Logic ---
 (function() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
@@ -322,95 +324,119 @@
   });
 })();
 
-// --- GSAP Cards Interaction Logic ---
+// --- GSAP Showcase Interaction Logic ---
 (function() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-  const cardsSection = document.querySelector('.cards-section');
-  if (!cardsSection) return;
+  const section = document.querySelector('.showcase-section');
+  if (!section) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   
-  const sectionTitle = cardsSection.querySelector('.section-title');
-  const featureCards = cardsSection.querySelectorAll('.feature-card');
+  const introTitle = section.querySelector('.showcase-title');
+  const introSub = section.querySelector('.showcase-sub');
+  const introEyebrow = section.querySelector('.showcase-eyebrow');
+  
+  const panels = section.querySelectorAll('.showcase-panel');
+  const currentIndicator = section.querySelector('#showcase-current');
 
-  const entranceTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: cardsSection,
-      start: "top 82%",
-      once: true
-    }
-  });
-
-  if (!prefersReducedMotion) {
-    if (sectionTitle) gsap.set(sectionTitle, { opacity: 0, y: 22 });
-
-    if (sectionTitle) entranceTl.to(sectionTitle, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.12);
-
-    if (featureCards.length) {
-      gsap.set(featureCards, { opacity: 0, y: 28, scale: 0.985 });
-      const handoffTime = 0.35;
-      entranceTl.to(featureCards, {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: "power3.out"
-      }, handoffTime);
-    }
-  } else {
-    gsap.set([sectionTitle, featureCards], { opacity: 1 });
+  if (prefersReducedMotion) {
+    gsap.set(panels, { autoAlpha: 1, scale: 1, yPercent: 0 });
+    return; 
   }
 
-  // Parallax & Hover Logic for each card
-  featureCards.forEach(card => {
-    const cardImage = card.querySelector('.card-image');
-    if (!cardImage) return;
+  gsap.set(panels[0], { autoAlpha: 0, scale: 0.94 });
+  gsap.set(panels[1], { yPercent: 100 });
+  gsap.set(panels[2], { yPercent: 100 });
 
-    if (!prefersReducedMotion) {
-      // Scroll Parallax (Y-axis)
-      gsap.fromTo(cardImage, 
-        { yPercent: -4 },
-        {
-          yPercent: 4,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.8
-          }
-        }
-      );
+  const imgs = section.querySelectorAll('.panel-image');
+  if (imgs[1]) gsap.set(imgs[1], { scale: 1.04 });
+  if (imgs[2]) gsap.set(imgs[2], { scale: 1.04 });
 
-      // Mouse Parallax (X & Y axis)
-      if (window.matchMedia("(pointer: fine)").matches) {
-        const xTo = gsap.quickTo(cardImage, "x", { duration: 0.4, ease: "power2.out" });
-        const yTo = gsap.quickTo(cardImage, "y", { duration: 0.4, ease: "power2.out" });
-        const scaleTo = gsap.quickTo(cardImage, "scale", { duration: 0.55, ease: "power2.out" });
-
-        card.addEventListener("mouseenter", () => {
-          scaleTo(1.035);
-        });
-
-        card.addEventListener("mousemove", (e) => {
-          const rect = card.getBoundingClientRect();
-          const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-          const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-
-          xTo(normX * 7);
-          yTo(normY * 5);
-        });
-
-        card.addEventListener("mouseleave", () => {
-          scaleTo(1);
-          xTo(0);
-          yTo(0);
-        });
-      }
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1
     }
   });
+
+  // 1. Intro -> Panel 01 Transition (0 ~ 1)
+  tl.to([introTitle, introSub, introEyebrow], {
+    opacity: 0,
+    y: -50,
+    duration: 1,
+    ease: "power2.inOut",
+    stagger: 0.1
+  }, 0);
+
+  tl.to(panels[0], {
+    autoAlpha: 1,
+    scale: 1,
+    duration: 1,
+    ease: "power2.out"
+  }, 0.2);
+
+  // 2. Hold Panel 01 (1 ~ 2)
+  tl.to({}, {duration: 1}, 1);
+
+  // 3. Panel 01 -> Panel 02 Transition (2 ~ 3)
+  tl.to(panels[0], {
+    scale: 1.04,
+    y: -10,
+    opacity: 0,
+    duration: 1,
+    ease: "power2.inOut"
+  }, 2);
+
+  tl.to(panels[1], {
+    yPercent: 0,
+    duration: 1,
+    ease: "power2.out",
+    onStart: () => { if(currentIndicator) currentIndicator.textContent = '02'; },
+    onReverseComplete: () => { if(currentIndicator) currentIndicator.textContent = '01'; }
+  }, 2);
+
+  if (imgs[1]) {
+    tl.to(imgs[1], { scale: 1.0, duration: 1, ease: "power2.out" }, 2);
+  }
+
+  // 4. Hold Panel 02 (3 ~ 4)
+  tl.to({}, {duration: 1}, 3);
+
+  // 5. Panel 02 -> Panel 03 Transition (4 ~ 5)
+  tl.to(panels[1], {
+    scale: 1.04,
+    y: -10,
+    opacity: 0,
+    duration: 1,
+    ease: "power2.inOut"
+  }, 4);
+
+  tl.to(panels[2], {
+    yPercent: 0,
+    duration: 1,
+    ease: "power2.out",
+    onStart: () => { if(currentIndicator) currentIndicator.textContent = '03'; },
+    onReverseComplete: () => { if(currentIndicator) currentIndicator.textContent = '02'; }
+  }, 4);
+
+  if (imgs[2]) {
+    tl.to(imgs[2], { scale: 1.0, duration: 1, ease: "power2.out" }, 4);
+  }
+
+  // 6. Hold Panel 03 (5 ~ 6)
+  tl.to({}, {duration: 1}, 5);
+
+  // 7. Showcase -> News Transition (End of sticky) (6 ~ 7)
+  tl.to(panels[2], {
+    scale: 0.96,
+    opacity: 0.35,
+    duration: 1,
+    ease: "power2.inOut"
+  }, 6);
+
 })();
 
 // --- GSAP News Interaction Logic ---
