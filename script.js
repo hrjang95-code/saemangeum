@@ -65,11 +65,11 @@
     if(i!==lastDrawn)draw(i);
     
     var progress = currentFrame / (FRAME_COUNT - 1);
-    var statsSection = document.querySelector('.stats-section');
+    var statsSection = document.querySelector('.hero-stats-overlay');
     if (statsSection) {
       var p = Math.max(0, Math.min(1, (progress - 0.8) * 10));
       statsSection.style.opacity = p;
-      statsSection.style.transform = 'translate(-50%, ' + (24 - p * 24) + 'px)';
+      statsSection.style.transform = 'translate(-50%, ' + (20 - p * 20) + 'px)';
       statsSection.style.pointerEvents = p > 0.5 ? 'auto' : 'none';
       
       if (progress >= 0.82 && !window.statsTriggered) {
@@ -240,7 +240,7 @@
 (function() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
-  const statsSection = document.querySelector('.stats-section');
+  const statsSection = document.querySelector('.hero-stats-overlay');
   if (!statsSection) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
