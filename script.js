@@ -63,6 +63,21 @@
     if(Math.abs(targetFrame-currentFrame)<0.02)currentFrame=targetFrame;
     var i=Math.max(0,Math.min(FRAME_COUNT-1,Math.round(currentFrame)));
     if(i!==lastDrawn)draw(i);
+    
+    var progress = currentFrame / (FRAME_COUNT - 1);
+    var statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+      var p = Math.max(0, Math.min(1, (progress - 0.8) * 10));
+      statsSection.style.opacity = p;
+      statsSection.style.transform = 'translate(-50%, ' + (24 - p * 24) + 'px)';
+      statsSection.style.pointerEvents = p > 0.5 ? 'auto' : 'none';
+      
+      if (progress >= 0.82 && !window.statsTriggered) {
+        window.statsTriggered = true;
+        window.dispatchEvent(new Event('playStats'));
+      }
+    }
+    
     requestAnimationFrame(animate);
   }
   window.addEventListener('scroll',updateTarget,{passive:true});window.addEventListener('resize',resize);
@@ -232,17 +247,12 @@
   const statItems = statsSection.querySelectorAll('.stat-item');
 
   if (prefersReducedMotion) {
+    gsap.set(statsSection, { opacity: 1 });
     gsap.set(statItems, { opacity: 1 });
     return;
   }
 
-  const tlStats = gsap.timeline({
-    scrollTrigger: {
-      trigger: statsSection,
-      start: "top 82%",
-      once: true
-    }
-  });
+  const tlStats = gsap.timeline({ paused: true });
 
   const isMobile = window.innerWidth < 768;
   const yOffset = isMobile ? 10 : 16;
@@ -287,6 +297,10 @@
     }
 
     tlStats.add(pTl, i * 0.08);
+  });
+
+  window.addEventListener('playStats', () => {
+    if (tlStats.progress() === 0) tlStats.play();
   });
 })();
 
