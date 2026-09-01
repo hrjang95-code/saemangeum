@@ -57,6 +57,37 @@
     var p=Math.max(0,Math.min(1,-rect.top/distance));
     targetFrame=p*(FRAME_COUNT-1);
     bar.style.width=(p*100)+'%';progressText.textContent=String(Math.round(p*100)).padStart(2,'0');
+    
+    var statsSection = document.querySelector('.hero-stats-overlay');
+    if (statsSection) {
+      if (typeof gsap !== 'undefined') {
+        if (typeof window.statsVisible === 'undefined') {
+          gsap.set(statsSection, { autoAlpha: 0, y: 18 });
+          window.statsVisible = false;
+        }
+        var shouldBeVisible = p >= 0.78;
+        if (shouldBeVisible !== window.statsVisible) {
+          window.statsVisible = shouldBeVisible;
+          if (shouldBeVisible) {
+            gsap.to(statsSection, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
+            if (!window.statsTriggered) {
+              window.statsTriggered = true;
+              window.dispatchEvent(new Event('playStats'));
+            }
+          } else {
+            gsap.to(statsSection, { autoAlpha: 0, y: 18, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+          }
+        }
+      } else {
+        statsSection.style.opacity = p >= 0.78 ? '1' : '0';
+        statsSection.style.visibility = p >= 0.78 ? 'visible' : 'hidden';
+        statsSection.style.transform = p >= 0.78 ? 'translate(-50%, 0)' : 'translate(-50%, 18px)';
+        if (p >= 0.78 && !window.statsTriggered) {
+          window.statsTriggered = true;
+          window.dispatchEvent(new Event('playStats'));
+        }
+      }
+    }
   }
   function animate(){
     currentFrame+=(targetFrame-currentFrame)*0.16;
@@ -64,23 +95,10 @@
     var i=Math.max(0,Math.min(FRAME_COUNT-1,Math.round(currentFrame)));
     if(i!==lastDrawn)draw(i);
     
-    var progress = currentFrame / (FRAME_COUNT - 1);
-    var statsSection = document.querySelector('.hero-stats-overlay');
-    if (statsSection) {
-      var p = Math.max(0, Math.min(1, (progress - 0.8) * 10));
-      statsSection.style.opacity = p;
-      statsSection.style.transform = 'translate(-50%, ' + (20 - p * 20) + 'px)';
-      statsSection.style.pointerEvents = p > 0.5 ? 'auto' : 'none';
-      
-      if (progress >= 0.82 && !window.statsTriggered) {
-        window.statsTriggered = true;
-        window.dispatchEvent(new Event('playStats'));
-      }
-    }
-    
     requestAnimationFrame(animate);
   }
   window.addEventListener('scroll',updateTarget,{passive:true});window.addEventListener('resize',resize);
+  window.addEventListener('pageshow',updateTarget);
   document.body.style.overflow='hidden';preload();updateTarget();animate();
 })();
 
