@@ -413,11 +413,10 @@ a {
 .stats-section {
   position: absolute;
   left: 50%;
-  bottom: 65px;
+  bottom: 58px;
   transform: translateX(-50%);
-  z-index: 20;
-  width: calc(100% - 160px);
-  max-width: 1440px;
+  z-index: 30;
+  width: min(1440px, calc(100% - 140px));
   margin: 0;
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(18px) saturate(125%);
