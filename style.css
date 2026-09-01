@@ -236,7 +236,7 @@ a {
       rgba(5,44,72,0.15) 50%,
       rgba(5,44,72,0) 70%
     ),
-    url('../img/map-saemangeum.png');
+    url('img/map-saemangeum.png');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -703,7 +703,7 @@ a {
       rgba(8,125,177,0.72) 45%,
       rgba(8,125,177,0.10) 75%
     ),
-    url('../img/development-map.png') center / cover no-repeat;
+    url('img/development-map.png') center / cover no-repeat;
   padding: 40px;
   display: flex;
   align-items: center;

@@ -148,7 +148,7 @@
     }
   } else {
     // Fallback for prefers-reduced-motion
-    gsap.set([textElements, selectedCard, mapPoints], { opacity: 1 });
+    gsap.set([eyebrow, divider, h2, p, selectedCard, mapPoints], { opacity: 1 });
   }
 
   // Step 05: Map Point Pulse
