@@ -47,9 +47,9 @@
     for(let i=0;i<FRAME_COUNT;i++){
       let img=new Image();frames[i]=img;
       img.onload=function(){
-        loaded++;var p=Math.round(loaded/FRAME_COUNT*100);loadNum.textContent=p;
+        loaded++;var p=Math.round(loaded/FRAME_COUNT*100);if(loadNum)loadNum.textContent=p;
         if(i===0){resize();document.body.style.overflow='auto'}
-        if(loaded>=Math.min(24,FRAME_COUNT)){loader.classList.add('done')}
+        if(loaded>=Math.min(24,FRAME_COUNT)){if(loader)loader.classList.add('done')}
       };
       img.onerror=function(){loaded++};img.src=src(i);
     }
