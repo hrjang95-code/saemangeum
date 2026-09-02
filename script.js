@@ -5,8 +5,11 @@
   var section=document.getElementById('scrub-section');
   var loader=document.getElementById('loader');
   var loadNum=document.getElementById('load-num');
-  var bar=document.getElementById('progress-bar');
-  var progressText=document.getElementById('progress-text');
+  var devProgressActive=document.getElementById('dev-progress-active');
+  var devProgressIndicator=document.getElementById('dev-progress-indicator');
+  var devProgressText=document.getElementById('dev-progress-text');
+  var devStatusText=document.getElementById('dev-status-text');
+  var devCircleStroke=document.getElementById('dev-circle-stroke');
   var frames=new Array(FRAME_COUNT);
   var loaded=0, targetFrame=0, currentFrame=0, lastDrawn=-1;
 
@@ -56,35 +59,74 @@
     var distance=section.offsetHeight-innerHeight;
     var p=Math.max(0,Math.min(1,-rect.top/distance));
     targetFrame=p*(FRAME_COUNT-1);
-    bar.style.width=(p*100)+'%';progressText.textContent=String(Math.round(p*100)).padStart(2,'0');
     
-    var statsSection = document.querySelector('.hero-stats-overlay');
-    if (statsSection) {
-      if (typeof gsap !== 'undefined') {
-        if (typeof window.statsVisible === 'undefined') {
-          gsap.set(statsSection, { autoAlpha: 0, y: 18 });
-          window.statsVisible = false;
-        }
-        var shouldBeVisible = p >= 0.78;
-        if (shouldBeVisible !== window.statsVisible) {
-          window.statsVisible = shouldBeVisible;
-          if (shouldBeVisible) {
-            gsap.to(statsSection, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
-            if (!window.statsTriggered) {
-              window.statsTriggered = true;
-              window.dispatchEvent(new Event('playStats'));
-            }
-          } else {
-            gsap.to(statsSection, { autoAlpha: 0, y: 18, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+    if (devProgressActive) devProgressActive.style.width=(p*100)+'%';
+    if (devProgressIndicator) devProgressIndicator.style.left=(p*100)+'%';
+    if (devProgressText) devProgressText.textContent=Math.round(p*100);
+    if (devStatusText) devStatusText.textContent=Math.round(p*100);
+    if (devCircleStroke) devCircleStroke.setAttribute('stroke-dasharray', (p*100) + ', 100');
+    
+    var storyData = [
+      { num: '409', unit: 'km²', label: '새만금 면적' },
+      { num: '291', unit: 'km²', label: '개발면적' },
+      { num: '22.1', unit: '조 원', label: '용지조성' },
+      { num: '27', unit: '만 명', label: '유입인구' },
+      { num: '263', unit: 'COMPANIES', label: '기업투자유치' },
+      { num: '47.8', unit: '조 원', label: '총투자금액' }
+    ];
+    
+    var stepIndex = Math.min(5, Math.floor(p * 6));
+    if (window.currentStepIndex !== stepIndex) {
+      window.currentStepIndex = stepIndex;
+      
+      var keyDataContent = document.getElementById('key-data-content');
+      var keyDataIdx = document.getElementById('key-data-idx');
+      var keyDataVal = document.getElementById('key-data-val');
+      var keyDataUnit = document.getElementById('key-data-unit');
+      var keyDataLabel = document.getElementById('key-data-label');
+      var dots = document.querySelectorAll('#data-pagination .index-num');
+      
+      var displayIdx = '0' + (stepIndex + 1);
+      if (keyDataIdx) keyDataIdx.textContent = displayIdx;
+      
+      if (keyDataContent && typeof gsap !== 'undefined') {
+        if (typeof window.storyInitialized === 'undefined') {
+          window.storyInitialized = true;
+          if (keyDataVal) keyDataVal.textContent = storyData[stepIndex].num;
+          if (keyDataUnit) keyDataUnit.textContent = storyData[stepIndex].unit;
+          if (keyDataLabel) keyDataLabel.textContent = storyData[stepIndex].label;
+          if (dots.length) {
+            dots.forEach(function(dot, idx) {
+              if (idx === stepIndex) dot.classList.add('active');
+              else dot.classList.remove('active');
+            });
           }
-        }
-      } else {
-        statsSection.style.opacity = p >= 0.78 ? '1' : '0';
-        statsSection.style.visibility = p >= 0.78 ? 'visible' : 'hidden';
-        statsSection.style.transform = p >= 0.78 ? 'translate(-50%, 0)' : 'translate(-50%, 18px)';
-        if (p >= 0.78 && !window.statsTriggered) {
-          window.statsTriggered = true;
-          window.dispatchEvent(new Event('playStats'));
+          gsap.set(keyDataContent, { opacity: 1, y: 0 });
+        } else {
+          gsap.to(keyDataContent, {
+            opacity: 0,
+            y: -5,
+            duration: 0.28,
+            ease: 'power2.out',
+            overwrite: 'auto',
+            onComplete: function() {
+              if (keyDataVal) keyDataVal.textContent = storyData[stepIndex].num;
+              if (keyDataUnit) keyDataUnit.textContent = storyData[stepIndex].unit;
+              if (keyDataLabel) keyDataLabel.textContent = storyData[stepIndex].label;
+              
+              if (dots.length) {
+                dots.forEach(function(dot, idx) {
+                  if (idx === stepIndex) dot.classList.add('active');
+                  else dot.classList.remove('active');
+                });
+              }
+              
+              gsap.fromTo(keyDataContent, 
+                { opacity: 0, y: 5 },
+                { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out', overwrite: 'auto' }
+              );
+            }
+          });
         }
       }
     }
