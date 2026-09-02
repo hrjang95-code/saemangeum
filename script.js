@@ -1,71 +1,71 @@
-(function(){
-  var FRAME_COUNT=192;
-  var canvas=document.getElementById('scrub-canvas');
-  var ctx=canvas.getContext('2d');
-  var section=document.getElementById('scrub-section');
-  var loader=document.getElementById('loader');
-  var loadNum=document.getElementById('load-num');
-  var devProgressActive=document.getElementById('dev-progress-active');
-  var devProgressIndicator=document.getElementById('dev-progress-indicator');
-  var devProgressText=document.getElementById('dev-progress-text');
-  var devStatusText=document.getElementById('dev-status-text');
-  var devCircleStroke=document.getElementById('dev-circle-stroke');
-  var frames=new Array(FRAME_COUNT);
-  var loaded=0, targetFrame=0, currentFrame=0, lastDrawn=-1;
+(function () {
+  var FRAME_COUNT = 192;
+  var canvas = document.getElementById('scrub-canvas');
+  var ctx = canvas.getContext('2d');
+  var section = document.getElementById('scrub-section');
+  var loader = document.getElementById('loader');
+  var loadNum = document.getElementById('load-num');
+  var devProgressActive = document.getElementById('dev-progress-active');
+  var devProgressIndicator = document.getElementById('dev-progress-indicator');
+  var devProgressText = document.getElementById('dev-progress-text');
+  var devStatusText = document.getElementById('dev-status-text');
+  var devCircleStroke = document.getElementById('dev-circle-stroke');
+  var frames = new Array(FRAME_COUNT);
+  var loaded = 0, targetFrame = 0, currentFrame = 0, lastDrawn = -1;
 
-  function src(i){return 'frames/frame_'+String(i+1).padStart(3,'0')+'.jpg'}
-  function resize(){
-    var dpr=Math.min(window.devicePixelRatio||1,2);
-    canvas.width=Math.round(innerWidth*dpr);canvas.height=Math.round(innerHeight*dpr);
+  function src(i) { return 'frames/frame_' + String(i + 1).padStart(3, '0') + '.jpg' }
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(innerWidth * dpr); canvas.height = Math.round(innerHeight * dpr);
     draw(Math.round(currentFrame));
   }
-  function draw(i){
-    var img=frames[i]; if(!img||!img.complete)return;
-    var cw=canvas.width, ch=canvas.height;
-    var dpr = Math.min(window.devicePixelRatio||1, 2);
+  function draw(i) {
+    var img = frames[i]; if (!img || !img.complete) return;
+    var cw = canvas.width, ch = canvas.height;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var headerH = 64 * dpr;
     var availH = ch - headerH;
-    
+
     // FULL-BLEED Cover scaling
     var scale = Math.max(cw / img.width, availH / img.height);
     var w = img.width * scale, h = img.height * scale;
     var x = (cw - w) / 2;
-    
+
     // Vertical alignment: center 35% to preserve sky and horizon
     var y = headerH + (availH - h) * 0.35;
-    
+
     // Clear canvas
     ctx.clearRect(0, 0, cw, ch);
-    
+
     // Draw main image
     ctx.globalAlpha = 1.0;
     ctx.filter = 'none';
     ctx.drawImage(img, x, y, w, h);
-    lastDrawn=i;
+    lastDrawn = i;
   }
-  function preload(){
-    for(let i=0;i<FRAME_COUNT;i++){
-      let img=new Image();frames[i]=img;
-      img.onload=function(){
-        loaded++;var p=Math.round(loaded/FRAME_COUNT*100);if(loadNum)loadNum.textContent=p;
-        if(i===0){resize();document.body.style.overflow='auto'}
-        if(loaded>=Math.min(24,FRAME_COUNT)){if(loader)loader.classList.add('done')}
+  function preload() {
+    for (let i = 0; i < FRAME_COUNT; i++) {
+      let img = new Image(); frames[i] = img;
+      img.onload = function () {
+        loaded++; var p = Math.round(loaded / FRAME_COUNT * 100); if (loadNum) loadNum.textContent = p;
+        if (i === 0) { resize(); document.body.style.overflow = 'auto' }
+        if (loaded >= Math.min(24, FRAME_COUNT)) { if (loader) loader.classList.add('done') }
       };
-      img.onerror=function(){loaded++};img.src=src(i);
+      img.onerror = function () { loaded++ }; img.src = src(i);
     }
   }
-  function updateTarget(){
-    var rect=section.getBoundingClientRect();
-    var distance=section.offsetHeight-innerHeight;
-    var p=Math.max(0,Math.min(1,-rect.top/distance));
-    targetFrame=p*(FRAME_COUNT-1);
-    
-    if (devProgressActive) devProgressActive.style.width=(p*100)+'%';
-    if (devProgressIndicator) devProgressIndicator.style.left=(p*100)+'%';
-    if (devProgressText) devProgressText.textContent=Math.round(p*100);
-    if (devStatusText) devStatusText.textContent=Math.round(p*100);
-    if (devCircleStroke) devCircleStroke.setAttribute('stroke-dasharray', (p*100) + ', 100');
-    
+  function updateTarget() {
+    var rect = section.getBoundingClientRect();
+    var distance = section.offsetHeight - innerHeight;
+    var p = Math.max(0, Math.min(1, -rect.top / distance));
+    targetFrame = p * (FRAME_COUNT - 1);
+
+    if (devProgressActive) devProgressActive.style.width = (p * 100) + '%';
+    if (devProgressIndicator) devProgressIndicator.style.left = (p * 100) + '%';
+    if (devProgressText) devProgressText.textContent = Math.round(p * 100);
+    if (devStatusText) devStatusText.textContent = Math.round(p * 100);
+    if (devCircleStroke) devCircleStroke.setAttribute('stroke-dasharray', (p * 100) + ', 100');
+
     var storyData = [
       { num: '409', unit: 'km²', label: '새만금 면적' },
       { num: '291', unit: 'km²', label: '개발면적' },
@@ -74,21 +74,21 @@
       { num: '263', unit: 'COMPANIES', label: '기업투자유치' },
       { num: '47.8', unit: '조 원', label: '총투자금액' }
     ];
-    
+
     var stepIndex = Math.min(5, Math.floor(p * 6));
     if (window.currentStepIndex !== stepIndex) {
       window.currentStepIndex = stepIndex;
-      
+
       var keyDataContent = document.getElementById('key-data-content');
       var keyDataIdx = document.getElementById('key-data-idx');
       var keyDataVal = document.getElementById('key-data-val');
       var keyDataUnit = document.getElementById('key-data-unit');
       var keyDataLabel = document.getElementById('key-data-label');
       var dots = document.querySelectorAll('#data-pagination .index-num');
-      
+
       var displayIdx = '0' + (stepIndex + 1);
       if (keyDataIdx) keyDataIdx.textContent = displayIdx;
-      
+
       if (keyDataContent && typeof gsap !== 'undefined') {
         if (typeof window.storyInitialized === 'undefined') {
           window.storyInitialized = true;
@@ -96,7 +96,7 @@
           if (keyDataUnit) keyDataUnit.textContent = storyData[stepIndex].unit;
           if (keyDataLabel) keyDataLabel.textContent = storyData[stepIndex].label;
           if (dots.length) {
-            dots.forEach(function(dot, idx) {
+            dots.forEach(function (dot, idx) {
               if (idx === stepIndex) dot.classList.add('active');
               else dot.classList.remove('active');
             });
@@ -109,19 +109,19 @@
             duration: 0.28,
             ease: 'power2.out',
             overwrite: 'auto',
-            onComplete: function() {
+            onComplete: function () {
               if (keyDataVal) keyDataVal.textContent = storyData[stepIndex].num;
               if (keyDataUnit) keyDataUnit.textContent = storyData[stepIndex].unit;
               if (keyDataLabel) keyDataLabel.textContent = storyData[stepIndex].label;
-              
+
               if (dots.length) {
-                dots.forEach(function(dot, idx) {
+                dots.forEach(function (dot, idx) {
                   if (idx === stepIndex) dot.classList.add('active');
                   else dot.classList.remove('active');
                 });
               }
-              
-              gsap.fromTo(keyDataContent, 
+
+              gsap.fromTo(keyDataContent,
                 { opacity: 0, y: 5 },
                 { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out', overwrite: 'auto' }
               );
@@ -131,23 +131,63 @@
       }
     }
   }
-  function animate(){
-    currentFrame+=(targetFrame-currentFrame)*0.16;
-    if(Math.abs(targetFrame-currentFrame)<0.02)currentFrame=targetFrame;
-    var i=Math.max(0,Math.min(FRAME_COUNT-1,Math.round(currentFrame)));
-    if(i!==lastDrawn)draw(i);
-    
+  function animate() {
+    currentFrame += (targetFrame - currentFrame) * 0.16;
+    if (Math.abs(targetFrame - currentFrame) < 0.02) currentFrame = targetFrame;
+    var i = Math.max(0, Math.min(FRAME_COUNT - 1, Math.round(currentFrame)));
+    if (i !== lastDrawn) draw(i);
+
     requestAnimationFrame(animate);
   }
-  window.addEventListener('scroll',updateTarget,{passive:true});window.addEventListener('resize',resize);
-  window.addEventListener('pageshow',updateTarget);
-  document.body.style.overflow='hidden';preload();updateTarget();animate();
+  window.addEventListener('scroll', updateTarget, { passive: true }); window.addEventListener('resize', resize);
+  window.addEventListener('pageshow', updateTarget);
+  document.body.style.overflow = 'hidden'; preload(); updateTarget(); animate();
 })();
 
 
 
+
+// --- MAP INTRO Reveal Animation ---
+(function () {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  const introSection = document.getElementById('map-intro');
+  if (!introSection) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const eyebrow = introSection.querySelector('.map-intro-eyebrow');
+  const heading = introSection.querySelector('.map-intro-heading');
+  const desc = introSection.querySelector('.map-intro-desc');
+  const guideEl = document.getElementById('map-intro-guide');
+
+  if (prefersReducedMotion) {
+    gsap.set([eyebrow, heading, desc, guideEl].filter(Boolean), { opacity: 1, y: 0, clipPath: 'none' });
+    return;
+  }
+
+  // 초기 상태 설정
+  if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 20 });
+  if (heading) gsap.set(heading, { opacity: 0, y: 24, clipPath: 'inset(100% 0% 0% 0%)' });
+  if (desc) gsap.set(desc, { opacity: 0, y: 16 });
+  if (guideEl) gsap.set(guideEl, { opacity: 0, y: 16 });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: introSection,
+      start: 'top 80%',
+      once: true
+    }
+  });
+
+  if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0);
+  if (heading) tl.to(heading, { opacity: 1, y: 0, clipPath: 'inset(0% 0% -10% 0%)', duration: 0.85, ease: 'power3.out' }, 0.1);
+  if (desc) tl.to(desc, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 0.22);
+  if (guideEl) tl.to(guideEl, { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' }, 0.32);
+})();
+
 // --- GSAP Map Interaction Logic ---
-(function() {
+(function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
 
@@ -156,95 +196,95 @@
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 1. Map Section Intro Animation
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: mapSection,
-      start: "top 78%",
-      once: true
-    }
-  });
-
-  const eyebrow = mapSection.querySelector('.map-text .eyebrow');
-  const divider = mapSection.querySelector('.section-divider');
-  const h2 = mapSection.querySelector('.map-text h2');
-  const p = mapSection.querySelector('.map-text p');
   const selectedCard = mapSection.querySelector('.selected-area-card');
   const mapPoints = mapSection.querySelectorAll('.map-point');
+  const mapLayout = mapSection.querySelector('.map-layout');
 
   if (!prefersReducedMotion) {
-    // Step 01: Common Section Header Reveal
-    if (eyebrow) gsap.set(eyebrow, { opacity: 0, y: 8 });
-    if (divider) gsap.set(divider, { scaleX: 0 });
-    if (h2) gsap.set(h2, { opacity: 0, y: 22 });
-    if (p) gsap.set(p, { opacity: 0, y: 14 });
+    // 1. Map Points (Marker Stagger)
+    if (mapPoints.length) {
+      mapPoints.forEach((point) => {
+        const line = point.querySelector('.point-line');
+        const dot = point.querySelector('.point-dot');
+        const labelText = point.querySelector('.point-label');
 
-    if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0);
-    if (divider) tl.to(divider, { scaleX: 1, duration: 0.6, ease: "power2.out" }, 0.08);
-    if (h2) tl.to(h2, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.12);
-    if (p) tl.to(p, { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 0.22);
-
-    const handoffTime = 0.35;
-
-    // Step 02: Selected Area Card
-    if (selectedCard) {
-      gsap.set(selectedCard, { opacity: 0, x: -25, scale: 0.98 });
-      tl.to(selectedCard, {
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        duration: 0.65,
-        ease: "power3.out"
-      }, handoffTime);
+        gsap.set(point, { opacity: 0, y: 8, scale: 0.82 });
+        if (line) gsap.set(line, { scaleY: 0, transformOrigin: 'top center' });
+        if (labelText) gsap.set(labelText, { opacity: 0 });
+        if (dot) gsap.set(dot, { scale: 0.7, opacity: 0 });
+      });
     }
 
-    // Step 03 & 04: Map Points & Lines
+    if (selectedCard) gsap.set(selectedCard, { opacity: 0, x: -20 });
+
+    const mapTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: mapSection,
+        start: "top 72%",
+        once: true
+      }
+    });
+
     if (mapPoints.length) {
-      const pointsTl = gsap.timeline();
-      
       mapPoints.forEach((point, i) => {
         const line = point.querySelector('.point-line');
         const dot = point.querySelector('.point-dot');
         const labelText = point.querySelector('.point-label');
-        
-        gsap.set(point, { opacity: 0, y: 8, scale: 0.85 });
-        if (line) gsap.set(line, { scaleY: 0 });
-        if (labelText) gsap.set(labelText, { opacity: 0 });
-        if (dot) gsap.set(dot, { scale: 0, opacity: 0 });
+        const offset = i * 0.12;
 
-        const pTl = gsap.timeline();
-        pTl.to(point, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.4)" });
-        if (dot) pTl.to(dot, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.25");
-        if (line) pTl.to(line, { scaleY: 1, duration: 0.3, ease: "power2.out" }, "-=0.15");
-        if (labelText) pTl.to(labelText, { opacity: 1, duration: 0.2 }, "-=0.1");
-
-        pointsTl.add(pTl, i * 0.12);
+        mapTl.to(point, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }, offset);
+        if (line) mapTl.to(line, { scaleY: 1, duration: 0.35, ease: "power2.out" }, offset + 0.1);
+        if (dot) mapTl.to(dot, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" }, offset + 0.18);
+        if (labelText) mapTl.to(labelText, { opacity: 1, duration: 0.22, ease: "none" }, offset + 0.22);
       });
+
+      const markersDuration = (mapPoints.length - 1) * 0.12 + 0.5 + 0.1;
       
-      tl.add(pointsTl, handoffTime + 0.12);
+      if (selectedCard) {
+        mapTl.to(selectedCard, { opacity: 1, x: 0, duration: 0.65, ease: "power3.out" }, markersDuration + 0.08);
+      }
+    } else if (selectedCard) {
+      mapTl.to(selectedCard, { opacity: 1, x: 0, duration: 0.65, ease: "power3.out" });
     }
   } else {
     // Fallback for prefers-reduced-motion
-    gsap.set([eyebrow, divider, h2, p, selectedCard, mapPoints], { opacity: 1 });
+    gsap.set([selectedCard, ...mapPoints], { opacity: 1 });
   }
 
-  // Step 05: Map Point Pulse
-  const rings = mapSection.querySelectorAll('.point-ring');
-  if (rings.length && !prefersReducedMotion) {
-    rings.forEach((ring, i) => {
-      gsap.fromTo(ring, 
-        { scale: 1, opacity: 0.5 },
-        {
-          scale: 1.8,
-          opacity: 0,
-          duration: 2,
-          repeat: -1,
-          delay: i * 0.4 + 1.5,
-          ease: "power1.out",
-          immediateRender: false
+  // MAP Parallax (Interaction C)
+  if (mapLayout && !prefersReducedMotion) {
+    const isMobile = window.innerWidth < 760;
+    const yRange = isMobile ? 15 : 25; // 모바일은 약하게
+    
+    // Animate map-layout wrapper (contains markers and card)
+    gsap.fromTo(mapLayout, 
+      { y: -yRange },
+      {
+        y: yRange,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: mapSection,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.0 // 부드러운 연결
         }
-      );
-    });
+      }
+    );
+
+    // Animate background-image of explore-map by the same amount
+    gsap.fromTo(mapSection,
+      { backgroundPosition: `center calc(50% - ${yRange}px)` },
+      {
+        backgroundPosition: `center calc(50% + ${yRange}px)`,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: mapSection,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1.0
+        }
+      }
+    );
   }
 
   // Step 07: Selected Card Click Interaction
@@ -267,7 +307,7 @@
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       if (id === activeId || !areaData[id]) return;
-      
+
       // Update Active State
       mapPoints.forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
@@ -276,19 +316,19 @@
       // Card Content Change Animation
       const data = areaData[id];
       const elementsToAnimate = [cardNo, cardEng, cardTitle, cardDesc].filter(Boolean);
-      
+
       gsap.to(elementsToAnimate, {
         opacity: 0,
         y: -8,
         duration: 0.15,
         ease: "power2.in",
         onComplete: () => {
-          if(cardNo) cardNo.textContent = data.no;
-          if(cardEng) cardEng.textContent = data.eng;
-          if(cardTitle) cardTitle.textContent = data.title;
-          if(cardDesc) cardDesc.textContent = data.desc;
-          
-          gsap.fromTo(elementsToAnimate, 
+          if (cardNo) cardNo.textContent = data.no;
+          if (cardEng) cardEng.textContent = data.eng;
+          if (cardTitle) cardTitle.textContent = data.title;
+          if (cardDesc) cardDesc.textContent = data.desc;
+
+          gsap.fromTo(elementsToAnimate,
             { opacity: 0, y: 8 },
             { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", stagger: 0.02 }
           );
@@ -299,7 +339,7 @@
 })();
 
 // --- GSAP Stats Interaction Logic ---
-(function() {
+(function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   const statsSection = document.querySelector('.hero-stats-overlay');
@@ -322,36 +362,36 @@
   statItems.forEach((item, i) => {
     const icon = item.querySelector('.stat-icon');
     const numEl = item.querySelector('.stat-num');
-    
+
     if (!numEl) return;
-    
+
     const originalText = numEl.textContent;
     const targetNum = parseFloat(originalText.replace(/,/g, ''));
-    const unit = originalText.replace(/[\d,.]/g, ''); 
+    const unit = originalText.replace(/[\d,.]/g, '');
     const floatMatch = originalText.match(/\.\d+/);
     const decimals = floatMatch ? floatMatch[0].length - 1 : 0;
-    
+
     gsap.set(item, { opacity: 0, y: yOffset });
     if (icon) gsap.set(icon, { opacity: 0, scale: 0.8 });
-    
+
     const pTl = gsap.timeline();
-    
+
     pTl.to(item, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" });
     if (icon) pTl.to(icon, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.3)" }, "-=0.4");
-    
+
     if (!isNaN(targetNum)) {
       const counter = { val: 0 };
       pTl.to(counter, {
         val: targetNum,
         duration: 1.2,
         ease: "power2.out",
-        onUpdate: function() {
+        onUpdate: function () {
           numEl.textContent = (counter.val).toFixed(decimals) + unit;
         },
-        onComplete: function() {
+        onComplete: function () {
           numEl.textContent = originalText;
-          gsap.fromTo(numEl, 
-            { scale: 1 }, 
+          gsap.fromTo(numEl,
+            { scale: 1 },
             { scale: 1.035, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }
           );
         }
@@ -367,24 +407,24 @@
 })();
 
 // --- GSAP Showcase Interaction Logic ---
-(function() {
+(function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   const section = document.querySelector('.showcase-section');
   if (!section) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
+
   const introTitle = section.querySelector('.showcase-title');
   const introSub = section.querySelector('.showcase-sub');
   const introEyebrow = section.querySelector('.showcase-eyebrow');
-  
+
   const panels = section.querySelectorAll('.showcase-panel');
   const currentIndicator = section.querySelector('#showcase-current');
 
   if (prefersReducedMotion) {
     gsap.set(panels, { autoAlpha: 1, scale: 1, yPercent: 0 });
-    return; 
+    return;
   }
 
   gsap.set(panels[0], { autoAlpha: 0, scale: 0.94 });
@@ -421,7 +461,7 @@
   }, 0.2);
 
   // 2. Hold Panel 01 (1 ~ 2)
-  tl.to({}, {duration: 1}, 1);
+  tl.to({}, { duration: 1 }, 1);
 
   // 3. Panel 01 -> Panel 02 Transition (2 ~ 3)
   tl.to(panels[0], {
@@ -436,8 +476,8 @@
     yPercent: 0,
     duration: 1,
     ease: "power2.out",
-    onStart: () => { if(currentIndicator) currentIndicator.textContent = '02'; },
-    onReverseComplete: () => { if(currentIndicator) currentIndicator.textContent = '01'; }
+    onStart: () => { if (currentIndicator) currentIndicator.textContent = '02'; },
+    onReverseComplete: () => { if (currentIndicator) currentIndicator.textContent = '01'; }
   }, 2);
 
   if (imgs[1]) {
@@ -445,7 +485,7 @@
   }
 
   // 4. Hold Panel 02 (3 ~ 4)
-  tl.to({}, {duration: 1}, 3);
+  tl.to({}, { duration: 1 }, 3);
 
   // 5. Panel 02 -> Panel 03 Transition (4 ~ 5)
   tl.to(panels[1], {
@@ -460,8 +500,8 @@
     yPercent: 0,
     duration: 1,
     ease: "power2.out",
-    onStart: () => { if(currentIndicator) currentIndicator.textContent = '03'; },
-    onReverseComplete: () => { if(currentIndicator) currentIndicator.textContent = '02'; }
+    onStart: () => { if (currentIndicator) currentIndicator.textContent = '03'; },
+    onReverseComplete: () => { if (currentIndicator) currentIndicator.textContent = '02'; }
   }, 4);
 
   if (imgs[2]) {
@@ -469,7 +509,7 @@
   }
 
   // 6. Hold Panel 03 (5 ~ 6)
-  tl.to({}, {duration: 1}, 5);
+  tl.to({}, { duration: 1 }, 5);
 
   // 7. Showcase -> News Transition (End of sticky) (6 ~ 7)
   tl.to(panels[2], {
@@ -482,7 +522,7 @@
 })();
 
 // --- GSAP News Interaction Logic ---
-(function() {
+(function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   const newsSection = document.querySelector('.news-banner-section');
@@ -525,7 +565,7 @@
 
     newsItems.forEach((item, i) => {
       gsap.set(item, { opacity: 0, y: 18, "--divider-scale": 0 });
-      
+
       const pTl = gsap.timeline();
       pTl.to(item, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0);
       pTl.to(item, { "--divider-scale": 1, duration: 0.65, ease: "power2.out" }, 0);
@@ -539,7 +579,7 @@
 })();
 
 // --- GSAP Footer Animation ---
-(function() {
+(function () {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   const siteFooter = document.querySelector('.site-footer');
@@ -548,7 +588,7 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!prefersReducedMotion) {
-    gsap.fromTo(siteFooter, 
+    gsap.fromTo(siteFooter,
       { opacity: 0, y: 12 },
       {
         opacity: 1,

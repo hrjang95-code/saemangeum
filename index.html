@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>새만금 | 미래가 자라는 땅</title>
-  <link rel="stylesheet" href="style.css?v=20260902-12">
+  <link rel="stylesheet" href="style.css?v=20260902-14">
 </head>
+
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="새만금 홈">
@@ -26,10 +28,19 @@
     </nav>
     <div class="header-right">
       <button class="search-btn" aria-label="검색">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
       </button>
       <button class="global-menu">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
         전체메뉴
       </button>
     </div>
@@ -40,119 +51,150 @@
       <div class="scrub-stage">
         <div class="scrub-stage-inner" style="position: relative; width: 100%; height: 100%;">
           <canvas id="scrub-canvas"></canvas>
-        <!-- Background Flow Graphic -->
-        <svg class="hero-flow-graphic" viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,200 C300,300 600,50 900,150 C1200,250 1440,100 1440,100 L1440,400 L0,400 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <path d="M0,250 C400,100 700,350 1100,200 C1300,150 1440,250 1440,250 L1440,400 L0,400 Z" fill="rgba(199,232,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-        </svg>
-        
-        <div class="hero-copy">
-          <div class="hero-eyebrow">SAEMANGEUM<span class="eyebrow-line"></span></div>
-          <h1>새로운 땅,<br><span>새로운 가능성</span></h1>
-          <p class="hero-desc">대한민국의 미래가 새만금에서 시작됩니다</p>
-          <p class="hero-subdesc">New Land, New Opportunity</p>
-        </div>
-        
+          <!-- Background Flow Graphic -->
+          <svg class="hero-flow-graphic" viewBox="0 0 1440 400" preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,200 C300,300 600,50 900,150 C1200,250 1440,100 1440,100 L1440,400 L0,400 Z"
+              fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+            <path d="M0,250 C400,100 700,350 1100,200 C1300,150 1440,250 1440,250 L1440,400 L0,400 Z"
+              fill="rgba(199,232,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+          </svg>
 
-        
-        <div class="scroll-indicator-container">
-          <div class="scroll-ripple-wrapper">
-            <div class="scroll-indicator">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          <div class="hero-copy">
+            <div class="hero-eyebrow">SAEMANGEUM<span class="eyebrow-line"></span></div>
+            <h1>새로운 땅,<br><span>새로운 가능성</span></h1>
+            <p class="hero-desc">대한민국의 미래가 새만금에서 시작됩니다</p>
+            <p class="hero-subdesc">New Land, New Opportunity</p>
+          </div>
+
+
+
+          <div class="scroll-indicator-container">
+            <div class="scroll-ripple-wrapper">
+              <div class="scroll-indicator">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+            <span class="scroll-text">SCROLL</span>
+          </div>
+
+          <div class="hero-right-panel horizontal-glass-bar" id="hero-right-info">
+            <div class="panel-inner">
+              <div class="right-dev-progress">
+                <div class="dev-header">
+                  <span class="dev-title">DEVELOPMENT</span>
+                  <span class="dev-header-divider"></span>
+                  <span class="dev-subtitle">개발 진행률</span>
+                </div>
+                <div class="dev-percentage-group">
+                  <div class="dev-percentage"><span id="dev-progress-text">0</span><span class="percent-symbol">%</span>
+                  </div>
+                </div>
+                <div class="dev-progress-container">
+                  <div class="dev-progress-track">
+                    <div class="dev-progress-active" id="dev-progress-active"></div>
+                    <div class="dev-progress-indicator" id="dev-progress-indicator"></div>
+                  </div>
+                  <div class="dev-progress-status"><span id="dev-status-text">0</span> / 100</div>
+                </div>
+              </div>
+
+              <div class="panel-divider-vertical"></div>
+
+              <div class="right-key-data">
+                <div class="data-eyebrow">
+                  <span>KEY DATA</span>
+                </div>
+                <div class="data-content" id="key-data-content">
+                  <div class="data-value-group">
+                    <span class="data-value" id="key-data-val">409</span>
+                    <span class="data-unit" id="key-data-unit">km²</span>
+                  </div>
+                  <div class="data-label" id="key-data-label">새만금 면적</div>
+                </div>
+              </div>
             </div>
           </div>
-          <span class="scroll-text">SCROLL</span>
-        </div>
-
-        <div class="hero-right-panel horizontal-glass-bar" id="hero-right-info">
-          <div class="panel-inner">
-            <div class="right-dev-progress">
-              <div class="dev-header">
-                <span class="dev-title">DEVELOPMENT</span>
-                <span class="dev-header-divider"></span>
-                <span class="dev-subtitle">개발 진행률</span>
-              </div>
-              <div class="dev-percentage-group">
-                <div class="dev-percentage"><span id="dev-progress-text">0</span><span class="percent-symbol">%</span></div>
-              </div>
-              <div class="dev-progress-container">
-                <div class="dev-progress-track">
-                  <div class="dev-progress-active" id="dev-progress-active"></div>
-                  <div class="dev-progress-indicator" id="dev-progress-indicator"></div>
-                </div>
-                <div class="dev-progress-status"><span id="dev-status-text">0</span> / 100</div>
-              </div>
-            </div>
-            
-            <div class="panel-divider-vertical"></div>
-            
-            <div class="right-key-data">
-              <div class="data-eyebrow">
-                <span>KEY DATA</span>
-              </div>
-              <div class="data-content" id="key-data-content">
-                <div class="data-value-group">
-                  <span class="data-value" id="key-data-val">409</span>
-                  <span class="data-unit" id="key-data-unit">km²</span>
-                </div>
-                <div class="data-label" id="key-data-label">새만금 면적</div>
-              </div>
-            </div>
-          </div>
-        </div>
         </div>
       </div>
     </section>
 
 
 
-    <section id="explore-map" class="explore-map">
-      <div class="container-1440 map-layout">
-        <div class="map-text">
-          <span class="eyebrow">EXPLORE SAEMANGEUM</span>
-          <div class="section-divider"></div>
-          <h2>지도와 함께<br>탐험하는 새만금</h2>
-          <p>원하는 지역을 선택하고<br>새만금의 다양한 개발사업과 관광 정보를 확인해보세요.</p>
-        </div>
-        <div class="map-graphic">
-          <div class="map-bg"></div>
-        </div>
-        
-        <!-- 선택된 지역 정보 카드 -->
-        <div class="selected-area-card">
-          <div class="card-head">
-            <span class="card-no">01</span>
-            <span class="card-eng">INDUSTRY</span>
+    <!-- ===== MAP INTRO SECTION ===== -->
+    <section id="map-intro" class="map-intro" aria-label="새만금 지도 탐험 안내">
+      <div class="map-intro-inner">
+
+        <!-- 왼쪽: 타이틀 영역 -->
+        <div class="map-intro-title" id="map-intro-title">
+          <div class="map-intro-eyebrow">
+            <span class="map-intro-eyebrow-text">EXPLORE SAEMANGEUM</span>
+            <span class="map-intro-eyebrow-line"></span>
           </div>
-          <h3>산업·연구용지</h3>
-          <p>미래 산업을 위한 혁신 거점</p>
-          <a href="#" class="view-link">VIEW AREA &rarr;</a>
+          <h2 class="map-intro-heading">
+            <span class="heading-navy">지도와 함께&nbsp;</span><span class="heading-blue">탐험하는 새만금</span>
+          </h2>
+          <p class="map-intro-desc">원하는 지역을 선택하고 새만금의 다양한 개발사업과 관광 정보를 확인해보세요.</p>
         </div>
 
-        <!-- 지역 버튼들 -->
-        <button class="map-point" style="top: 21%; left: 69%;" data-id="02">
-          <span class="point-label">02 관광·레저용지</span>
-          <span class="point-line"></span>
-          <span class="point-dot"><span class="point-ring"></span></span>
-        </button>
-        <button class="map-point" style="top: 42%; left: 64%;" data-id="03">
-          <span class="point-label">03 공항경제권</span>
-          <span class="point-line"></span>
-          <span class="point-dot"><span class="point-ring"></span></span>
-        </button>
-        <button class="map-point" style="top: 61%; left: 71%;" data-id="04">
-          <span class="point-label">04 복합·경제용지</span>
-          <span class="point-line"></span>
-          <span class="point-dot"><span class="point-ring"></span></span>
-        </button>
-        <button class="map-point" style="top: 46%; left: 83%;" data-id="05">
-          <span class="point-label">05 배후도시용지</span>
-          <span class="point-line"></span>
-          <span class="point-dot"><span class="point-ring"></span></span>
-        </button>
+        <!-- 오른쪽: CTA 문구 -->
+        <div class="map-intro-cta" id="map-intro-guide">
+          <span class="map-cta-line" aria-hidden="true"></span>
+          <span class="map-cta-text">지역을 선택해 새만금을 살펴보세요</span>
+          <span class="map-cta-arrow" aria-hidden="true">→</span>
         </div>
-      </div>
+
+      </div><!-- /.map-intro-inner -->
     </section>
+    <!-- ===== END MAP INTRO ===== -->
+
+    <!-- ===== MAP SECTION WRAPPER ===== -->
+    <div class="map-section-wrapper">
+      <section id="explore-map" class="explore-map">
+        <div class="container-1440 map-layout">
+          <div class="map-graphic">
+            <div class="map-bg"></div>
+          </div>
+
+          <!-- 선택된 지역 정보 카드 -->
+          <div class="selected-area-card">
+            <div class="card-head">
+              <span class="card-no">01</span>
+              <span class="card-eng">INDUSTRY</span>
+            </div>
+            <h3>산업·연구용지</h3>
+            <p>미래 산업을 위한 혁신 거점</p>
+            <a href="#" class="view-link">VIEW AREA &rarr;</a>
+          </div>
+
+          <!-- 지역 버튼들 -->
+          <button class="map-point" style="top: 21%; left: 69%;" data-id="02">
+            <span class="point-label">02 관광·레저용지</span>
+            <span class="point-line"></span>
+            <span class="point-dot"><span class="point-ring"></span></span>
+          </button>
+          <button class="map-point" style="top: 42%; left: 64%;" data-id="03">
+            <span class="point-label">03 공항경제권</span>
+            <span class="point-line"></span>
+            <span class="point-dot"><span class="point-ring"></span></span>
+          </button>
+          <button class="map-point" style="top: 61%; left: 71%;" data-id="04">
+            <span class="point-label">04 복합·경제용지</span>
+            <span class="point-line"></span>
+            <span class="point-dot"><span class="point-ring"></span></span>
+          </button>
+          <button class="map-point" style="top: 46%; left: 83%;" data-id="05">
+            <span class="point-label">05 배후도시용지</span>
+            <span class="point-line"></span>
+            <span class="point-dot"><span class="point-ring"></span></span>
+          </button>
+        </div>
+    </div>
+    </section>
+    </div><!-- /.map-section-wrapper -->
 
 
     <section class="showcase-section" aria-label="새만금 디스커버리 쇼케이스">
@@ -207,7 +249,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="showcase-indicator">
             <span id="showcase-current" class="indicator-current">01</span>
             <span class="indicator-line"></span>
@@ -226,7 +268,9 @@
           </div>
           <div class="news-list">
             <a href="#" class="news-item">
-              <div class="news-thumb"><div class="news-thumb-img" style="background-image: url('img/news-01.png');"></div></div>
+              <div class="news-thumb">
+                <div class="news-thumb-img" style="background-image: url('img/news-01.png');"></div>
+              </div>
               <div class="news-info">
                 <span class="news-cat">NEWS</span>
                 <h4>새만금 스마트 수변도시 국가시범도시로 지정</h4>
@@ -235,7 +279,9 @@
               <span class="news-arrow">&rarr;</span>
             </a>
             <a href="#" class="news-item">
-              <div class="news-thumb"><div class="news-thumb-img" style="background-image: url('img/news-02.png');"></div></div>
+              <div class="news-thumb">
+                <div class="news-thumb-img" style="background-image: url('img/news-02.png');"></div>
+              </div>
               <div class="news-info">
                 <span class="news-cat">BUSINESS</span>
                 <h4>새만금 산업단지 투자기업 입주 협약</h4>
@@ -244,7 +290,9 @@
               <span class="news-arrow">&rarr;</span>
             </a>
             <a href="#" class="news-item">
-              <div class="news-thumb"><div class="news-thumb-img" style="background-image: url('img/news-03.png');"></div></div>
+              <div class="news-thumb">
+                <div class="news-thumb-img" style="background-image: url('img/news-03.png');"></div>
+              </div>
               <div class="news-info">
                 <span class="news-cat">TOUR</span>
                 <h4>새만금 관광 인프라 확충 추진</h4>
@@ -277,9 +325,24 @@
           <a href="#">찾아오시는 길</a>
         </div>
         <div class="footer-sns">
-          <a href="#" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg></a>
-          <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-          <a href="#" aria-label="Blog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a>
+          <a href="#" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path
+                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z">
+              </path>
+              <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+            </svg></a>
+          <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg></a>
+          <a href="#" aria-label="Blog"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg></a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -289,9 +352,13 @@
     <div class="footer-wave"></div>
   </footer>
 
-  <div id="loader" class="loader"><div><strong id="load-num">0</strong><span>%</span></div><p>새만금의 시간을 불러오는 중</p></div>
+  <div id="loader" class="loader">
+    <div><strong id="load-num">0</strong><span>%</span></div>
+    <p>새만금의 시간을 불러오는 중</p>
+  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="script.js?v=20260901-2"></script>
 </body>
+
 </html>
