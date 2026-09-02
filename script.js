@@ -252,39 +252,29 @@
   }
 
   // MAP Parallax (Interaction C)
-  if (mapLayout && !prefersReducedMotion) {
+  if (mapSection && !prefersReducedMotion) {
     const isMobile = window.innerWidth < 760;
-    const yRange = isMobile ? 15 : 25; // 모바일은 약하게
     
-    // Animate map-layout wrapper (contains markers and card)
-    gsap.fromTo(mapLayout, 
-      { y: -yRange },
-      {
-        y: yRange,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: mapSection,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.0 // 부드러운 연결
+    if (!isMobile) {
+      const yRange = 18;
+      const mapWrapper = mapSection.parentElement;
+      
+      // 지도 비주얼과 마커를 동일한 좌표계로 유지하기 위해 중복 패럴랙스 제거
+      // mapSection 자체를 하나의 visual layer로 사용하여 안정적인 패럴랙스 적용
+      gsap.fromTo(mapSection, 
+        { y: -yRange },
+        {
+          y: yRange,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: mapWrapper,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
         }
-      }
-    );
-
-    // Animate background-image of explore-map by the same amount
-    gsap.fromTo(mapSection,
-      { backgroundPosition: `center calc(50% - ${yRange}px)` },
-      {
-        backgroundPosition: `center calc(50% + ${yRange}px)`,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: mapSection,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.0
-        }
-      }
-    );
+      );
+    }
   }
 
   // Step 07: Selected Card Click Interaction
@@ -414,6 +404,7 @@
   if (!section) return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.innerWidth < 768;
 
   const introTitle = section.querySelector('.showcase-title');
   const introSub = section.querySelector('.showcase-sub');
@@ -422,18 +413,24 @@
   const panels = section.querySelectorAll('.showcase-panel');
   const currentIndicator = section.querySelector('#showcase-current');
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || isMobile) {
     gsap.set(panels, { autoAlpha: 1, scale: 1, yPercent: 0 });
     return;
   }
 
-  gsap.set(panels[0], { autoAlpha: 0, scale: 0.94 });
+  // 전체 스크롤 길이 축소 (기존 300vh -> 240vh)
+  const scrollArea = section.querySelector('.showcase-scroll-area');
+  if (scrollArea) {
+    scrollArea.style.height = '240vh';
+  }
+
+  gsap.set(panels[0], { autoAlpha: 0, scale: 0.96 }); // 강도 축소 (기존 0.94)
   gsap.set(panels[1], { yPercent: 100 });
   gsap.set(panels[2], { yPercent: 100 });
 
   const imgs = section.querySelectorAll('.panel-image');
-  if (imgs[1]) gsap.set(imgs[1], { scale: 1.04 });
-  if (imgs[2]) gsap.set(imgs[2], { scale: 1.04 });
+  if (imgs[1]) gsap.set(imgs[1], { scale: 1.02 }); // 강도 축소 (기존 1.04)
+  if (imgs[2]) gsap.set(imgs[2], { scale: 1.02 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -444,11 +441,11 @@
     }
   });
 
-  // 1. Intro -> Panel 01 Transition (0 ~ 1)
+  // 1. Intro -> Panel 01 Transition (0 ~ 0.8)
   tl.to([introTitle, introSub, introEyebrow], {
     opacity: 0,
-    y: -50,
-    duration: 1,
+    y: -30, // 강도 축소
+    duration: 0.8,
     ease: "power2.inOut",
     stagger: 0.1
   }, 0);
@@ -456,69 +453,63 @@
   tl.to(panels[0], {
     autoAlpha: 1,
     scale: 1,
-    duration: 1,
+    duration: 0.8,
     ease: "power2.out"
   }, 0.2);
 
-  // 2. Hold Panel 01 (1 ~ 2)
-  tl.to({}, { duration: 1 }, 1);
+  // 2. Hold Panel 01 (0.8 ~ 1.2) - 홀드 구간 단축
+  tl.to({}, { duration: 0.4 }, 0.8);
 
-  // 3. Panel 01 -> Panel 02 Transition (2 ~ 3)
+  // 3. Panel 01 -> Panel 02 Transition (1.2 ~ 2.0)
   tl.to(panels[0], {
-    scale: 1.04,
-    y: -10,
+    scale: 1.02,
+    y: -5,
     opacity: 0,
-    duration: 1,
+    duration: 0.8,
     ease: "power2.inOut"
-  }, 2);
+  }, 1.2);
 
   tl.to(panels[1], {
     yPercent: 0,
-    duration: 1,
+    duration: 0.8,
     ease: "power2.out",
     onStart: () => { if (currentIndicator) currentIndicator.textContent = '02'; },
     onReverseComplete: () => { if (currentIndicator) currentIndicator.textContent = '01'; }
-  }, 2);
+  }, 1.2);
 
   if (imgs[1]) {
-    tl.to(imgs[1], { scale: 1.0, duration: 1, ease: "power2.out" }, 2);
+    tl.to(imgs[1], { scale: 1.0, duration: 0.8, ease: "power2.out" }, 1.2);
   }
 
-  // 4. Hold Panel 02 (3 ~ 4)
-  tl.to({}, { duration: 1 }, 3);
+  // 4. Hold Panel 02 (2.0 ~ 2.4)
+  tl.to({}, { duration: 0.4 }, 2.0);
 
-  // 5. Panel 02 -> Panel 03 Transition (4 ~ 5)
+  // 5. Panel 02 -> Panel 03 Transition (2.4 ~ 3.2)
   tl.to(panels[1], {
-    scale: 1.04,
-    y: -10,
+    scale: 1.02,
+    y: -5,
     opacity: 0,
-    duration: 1,
+    duration: 0.8,
     ease: "power2.inOut"
-  }, 4);
+  }, 2.4);
 
   tl.to(panels[2], {
     yPercent: 0,
-    duration: 1,
+    duration: 0.8,
     ease: "power2.out",
     onStart: () => { if (currentIndicator) currentIndicator.textContent = '03'; },
     onReverseComplete: () => { if (currentIndicator) currentIndicator.textContent = '02'; }
-  }, 4);
+  }, 2.4);
 
   if (imgs[2]) {
-    tl.to(imgs[2], { scale: 1.0, duration: 1, ease: "power2.out" }, 4);
+    tl.to(imgs[2], { scale: 1.0, duration: 0.8, ease: "power2.out" }, 2.4);
   }
 
-  // 6. Hold Panel 03 (5 ~ 6)
-  tl.to({}, { duration: 1 }, 5);
+  // 6. Hold Panel 03 (3.2 ~ 3.6)
+  tl.to({}, { duration: 0.4 }, 3.2);
 
-  // 7. Showcase -> News Transition (End of sticky) (6 ~ 7)
-  tl.to(panels[2], {
-    scale: 0.96,
-    opacity: 0.35,
-    duration: 1,
-    ease: "power2.inOut"
-  }, 6);
-
+  // 7. Panel 03 Out 애니메이션 삭제 
+  // (TRAVEL 콘텐츠가 노출된 상태로 빈 스크롤 없이 바로 NEWS로 넘어감)
 })();
 
 // --- GSAP News Interaction Logic ---
