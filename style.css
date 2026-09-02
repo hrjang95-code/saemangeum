@@ -455,7 +455,7 @@ a {
 .map-intro-inner {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 52px 5.5vw 44px;
+  padding: 42px 5.5vw 36px;
   display: flex;
   align-items: center;
   gap: 0;
@@ -523,6 +523,13 @@ a {
   align-items: center;
   justify-content: flex-end;
   gap: 20px;
+}
+
+@media (min-width: 1025px) {
+  .map-intro-cta {
+    padding-right: 4vw;
+    margin-top: 14px;
+  }
 }
 
 .map-cta-line {
